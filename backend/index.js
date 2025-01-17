@@ -81,14 +81,23 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const extractedText = await readPDF(filePath); // Read the PDF file and get extracted text
 
     // Log the extracted text to verify
-    //  console.log('Extracted Text:', extractedText);
+    //console.log('Extracted Text:', extractedText);
 
     res.json({
       message: `File uploaded successfully: ${req.file.filename}`,
       data: extractedText, // Send the raw extracted text
+      chatbot: {
+        text: extractedText || '', // Ensure chatbot.text is defined
+      },
     });
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error processing file:', error);
+    res.json({
+      message: 'Error processing file.',
+      chatbot: {
+        text: '', // Ensure chatbot.text is defined even on error
+      },
+    });
   }
 });
 
